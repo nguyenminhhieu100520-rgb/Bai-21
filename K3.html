@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K3: Kiểm tra Mật khẩu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .back-button {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-title h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .form-title p {
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+        }
+
+        .form-group input.success {
+            border-color: #27ae60;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 1.2em;
+            user-select: none;
+        }
+
+        .toggle-password:hover {
+            color: #667eea;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 0.9em;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .strength-text {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .password-requirements {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .password-requirements h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .requirement {
+            color: #999;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .requirement.met {
+            color: #27ae60;
+        }
+
+        .requirement::before {
+            content: "○";
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .requirement.met::before {
+            content: "✓";
+            color: #27ae60;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .success-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .success-popup .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .success-popup h3 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .success-popup p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .success-popup button {
+            padding: 10px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Quay lại trang chủ</a>
+        
+        <div class="header">
+            <h1>🔐 K3: Kiểm tra Mật khẩu</h1>
+            <p>Form đăng ký với validation mật khẩu</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-title">
+                <h2>Đăng ký tài khoản</h2>
+                <p>Vui lòng điền thông tin để tạo tài khoản mới</p>
+            </div>
+
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập <span class="required">*</span></label>
+                    <input type="text" id="username" name="username" required>
+                    <div class="error-message" id="usernameError">Vui lòng nhập tên đăng nhập</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="emailError">Vui lòng nhập email hợp lệ</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" required>
+                        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-bar-fill" id="strengthBar"></div>
+                        </div>
+                        <div class="strength-text" id="strengthText"></div>
+                    </div>
+                    <div class="password-requirements">
+                        <h4>Yêu cầu mật khẩu:</h4>
+                        <div class="requirement" id="req-length">Ít nhất 8 ký tự</div>
+                        <div class="requirement" id="req-uppercase">Có chữ hoa</div>
+                        <div class="requirement" id="req-lowercase">Có chữ thường</div>
+                        <div class="requirement" id="req-number">Có số</div>
+                        <div class="requirement" id="req-special">Có ký tự đặc biệt (!@#$%^&*)</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                    </div>
+                    <div class="error-message" id="confirmPasswordError">Mật khẩu không khớp</div>
+                    <div class="success-message" id="confirmPasswordSuccess">✓ Mật khẩu khớp</div>
+                </div>
+
+                <button type="submit" class="submit-button">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div class="overlay" id="overlay"></div>
+    <div class="success-popup" id="successPopup">
+        <div class="icon">🎉</div>
+        <h3>Đăng ký thành công!</h3>
+        <p>Tài khoản của bạn đã được tạo thành công.</p>
+        <button onclick="closePopup()">Đóng</button>
+    </div>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Check password strength
+        password.addEventListener('input', function() {
+            const value = this.value;
+            passwordStrength.classList.add('show');
+
+            // Check requirements
+            const requirements = {
+                length: value.length >= 8,
+                uppercase: /[A-Z]/.test(value),
+                lowercase: /[a-z]/.test(value),
+                number: /[0-9]/.test(value),
+                special: /[!@#$%^&*]/.test(value)
+            };
+
+            // Update requirement indicators
+            document.getElementById('req-length').classList.toggle('met', requirements.length);
+            document.getElementById('req-uppercase').classList.toggle('met', requirements.uppercase);
+            document.getElementById('req-lowercase').classList.toggle('met', requirements.lowercase);
+            document.getElementById('req-number').classList.toggle('met', requirements.number);
+            document.getElementById('req-special').classList.toggle('met', requirements.special);
+
+            // Calculate strength
+            const metRequirements = Object.values(requirements).filter(Boolean).length;
+            let strength = 0;
+            let strengthLabel = '';
+            let color = '';
+
+            if (metRequirements === 0) {
+                strength = 0;
+            } else if (metRequirements <= 2) {
+                strength = 25;
+                strengthLabel = 'Yếu';
+                color = '#e74c3c';
+            } else if (metRequirements === 3) {
+                strength = 50;
+                strengthLabel = 'Trung bình';
+                color = '#f39c12';
+            } else if (metRequirements === 4) {
+                strength = 75;
+                strengthLabel = 'Khá';
+                color = '#3498db';
+            } else {
+                strength = 100;
+                strengthLabel = 'Mạnh';
+                color = '#27ae60';
+            }
+
+            strengthBar.style.width = strength + '%';
+            strengthBar.style.backgroundColor = color;
+            strengthText.textContent = strengthLabel ? `Độ mạnh: ${strengthLabel}` : '';
+            strengthText.style.color = color;
+        });
+
+        // Check if passwords match
+        confirmPassword.addEventListener('input', function() {
+            const errorMsg = document.getElementById('confirmPasswordError');
+            const successMsg = document.getElementById('confirmPasswordSuccess');
+
+            if (this.value === '') {
+                this.classList.remove('error', 'success');
+                errorMsg.classList.remove('show');
+                successMsg.classList.remove('show');
+                return;
+            }
+
+            if (this.value !== password.value) {
+                this.classList.add('error');
+                this.classList.remove('success');
+                errorMsg.classList.add('show');
+                successMsg.classList.remove('show');
+            } else {
+                this.classList.remove('error');
+                this.classList.add('success');
+                errorMsg.classList.remove('show');
+                successMsg.classList.add('show');
+            }
+        });
+
+        // Form validation
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username');
+            const email = document.getElementById('email');
+            let isValid = true;
+
+            // Validate username
+            if (username.value.trim() === '') {
+                username.classList.add('error');
+                document.getElementById('usernameError').classList.add('show');
+                isValid = false;
+            } else {
+                username.classList.remove('error');
+                document.getElementById('usernameError').classList.remove('show');
+            }
+
+            // Validate email
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email.value)) {
+                email.classList.add('error');
+                document.getElementById('emailError').classList.add('show');
+                isValid = false;
+            } else {
+                email.classList.remove('error');
+                document.getElementById('emailError').classList.remove('show');
+            }
+
+            // Validate password
+            if (password.value.length < 8) {
+                password.classList.add('error');
+                isValid = false;
+            } else {
+                password.classList.remove('error');
+            }
+
+            // Check if passwords match
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('error');
+                document.getElementById('confirmPasswordError').classList.add('show');
+                isValid = false;
+            } else {
+                confirmPassword.classList.remove('error');
+                document.getElementById('confirmPasswordError').classList.remove('show');
+            }
+
+            // If all validations pass
+            if (isValid) {
+                showSuccessPopup();
+            }
+        });
+
+        function showSuccessPopup() {
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('successPopup').classList.add('show');
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('successPopup').classList.remove('show');
+            form.reset();
+            passwordStrength.classList.remove('show');
+            document.querySelectorAll('.requirement').forEach(req => req.classList.remove('met'));
+            document.querySelectorAll('input').forEach(input => input.classList.remove('error', 'success'));
+            document.querySelectorAll('.error-message, .success-message').forEach(msg => msg.classList.remove('show'));
+        }
+    </script>
+</body>
+</html>

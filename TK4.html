@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TK4: Tab View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tab-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background-color: #f0f0f0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 18px 20px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            color: #666;
+        }
+
+        .tab-button:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .tab-button.active {
+            background-color: white;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.4s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .tab-content p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .tab-content ul {
+            margin-left: 20px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .tab-content li {
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .code-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .code-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .tab-button {
+                padding: 15px 10px;
+                font-size: 14px;
+            }
+
+            .tab-content {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Quay lại trang chủ</a>
+        
+        <div class="header">
+            <h1>📑 TK4: Tab View</h1>
+            <p>Hệ thống Tab động với JavaScript</p>
+        </div>
+
+        <div class="tab-container">
+            <!-- Các nút tab -->
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="openTab(event, 'tab1')">
+                    🏠 Giới thiệu
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'tab2')">
+                    💻 Cách hoạt động
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'tab3')">
+                    🎯 Ứng dụng
+                </button>
+            </div>
+
+            <!-- Nội dung Tab 1 -->
+            <div id="tab1" class="tab-content active">
+                <h2>Giới thiệu về Tab View</h2>
+                <p>Tab View là một giao diện người dùng phổ biến giúp tổ chức nội dung thành các phần riêng biệt, cho phép người dùng chuyển đổi giữa các phần mà không cần tải lại trang.</p>
+                
+                <div class="code-section">
+                    <h3>Lợi ích của Tab View:</h3>
+                    <ul>
+                        <li><strong>Tiết kiệm không gian:</strong> Hiển thị nhiều nội dung trong cùng một vùng</li>
+                        <li><strong>Trải nghiệm tốt:</strong> Người dùng dễ dàng điều hướng</li>
+                        <li><strong>Tổ chức rõ ràng:</strong> Phân chia nội dung theo chủ đề</li>
+                        <li><strong>Hiệu suất cao:</strong> Không cần tải lại trang</li>
+                    </ul>
+                </div>
+
+                <div class="highlight">
+                    <strong>💡 Mẹo:</strong> Tab View thường được sử dụng trong dashboard, trang sản phẩm, hồ sơ người dùng, và các ứng dụng web phức tạp.
+                </div>
+            </div>
+
+            <!-- Nội dung Tab 2 -->
+            <div id="tab2" class="tab-content">
+                <h2>Cách hoạt động</h2>
+                <p>Tab View hoạt động dựa trên 3 thành phần chính:</p>
+
+                <div class="code-section">
+                    <h3>1. HTML Structure</h3>
+                    <p>Cấu trúc gồm các nút tab và nội dung tương ứng với ID duy nhất.</p>
+                </div>
+
+                <div class="code-section">
+                    <h3>2. CSS Styling</h3>
+                    <ul>
+                        <li>Sử dụng <code>display: none</code> để ẩn nội dung</li>
+                        <li>Class <code>.active</code> để hiển thị tab được chọn</li>
+                        <li>CSS transition tạo hiệu ứng mượt mà</li>
+                    </ul>
+                </div>
+
+                <div class="code-section">
+                    <h3>3. JavaScript Logic</h3>
+                    <p>Hàm <code>openTab()</code> thực hiện:</p>
+                    <ul>
+                        <li>Ẩn tất cả nội dung tab (xóa class active)</li>
+                        <li>Xóa trạng thái active khỏi tất cả nút</li>
+                        <li>Hiển thị nội dung tab được chọn</li>
+                        <li>Đánh dấu nút được chọn</li>
+                    </ul>
+                </div>
+
+                <div class="highlight">
+                    <strong>🎨 Animation:</strong> Hiệu ứng fadeIn được thêm vào bằng CSS keyframes, tạo trải nghiệm mượt mà khi chuyển tab.
+                </div>
+            </div>
+
+            <!-- Nội dung Tab 3 -->
+            <div id="tab3" class="tab-content">
+                <h2>Ứng dụng thực tế</h2>
+                <p>Tab View được sử dụng rộng rãi trong nhiều loại website và ứng dụng:</p>
+
+                <div class="code-section">
+                    <h3>📱 E-commerce</h3>
+                    <ul>
+                        <li>Mô tả sản phẩm</li>
+                        <li>Đánh giá khách hàng</li>
+                        <li>Thông số kỹ thuật</li>
+                        <li>Chính sách đổi trả</li>
+                    </ul>
+                </div>
+
+                <div class="code-section">
+                    <h3>📊 Dashboard Admin</h3>
+                    <ul>
+                        <li>Tổng quan thống kê</li>
+                        <li>Báo cáo chi tiết</li>
+                        <li>Cài đặt hệ thống</li>
+                        <li>Quản lý người dùng</li>
+                    </ul>
+                </div>
+
+                <div class="code-section">
+                    <h3>👤 Trang Profile</h3>
+                    <ul>
+                        <li>Thông tin cá nhân</li>
+                        <li>Hoạt động gần đây</li>
+                        <li>Cài đặt tài khoản</li>
+                        <li>Lịch sử giao dịch</li>
+                    </ul>
+                </div>
+
+                <div class="highlight">
+                    <strong>🚀 Mở rộng:</strong> Bạn có thể thêm nhiều tab hơn, lưu trạng thái tab vào localStorage, hoặc tích hợp với routing để tạo URL riêng cho mỗi tab.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(event, tabId) {
+            // Ẩn tất cả nội dung tab
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            // Xóa class "active" khỏi tất cả các nút tab
+            var tabButtons = document.getElementsByClassName("tab-button");
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+
+            // Hiển thị nội dung tab được chọn
+            document.getElementById(tabId).classList.add("active");
+
+            // Thêm class "active" cho nút được nhấn
+            event.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>
